@@ -1,0 +1,32 @@
+/* 共享数据表格样式 —— 所有面板的基础表格外观 */
+.data-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table th {
+  background: #f8fafc;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.data-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.data-table tr:hover td {
+  background: #f8fafc;
+}

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillBoard</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./chart.umd.js"></script>
+  <script src="./chartjs-plugin-datalabels.min.js"></script>
+  <script src="./sql-wasm.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- 桌面端侧边栏 -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <h1>SkillBoard</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-nav-item active" data-panel="cookie-accounting">
+          <span class="sidebar-nav-icon" id="sidebar-icon-cookie"></span>
+          <span>饼干记账</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="home-manager">
+          <span class="sidebar-nav-icon" id="sidebar-icon-home"></span>
+          <span>居家管家</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="calorie">
+          <span class="sidebar-nav-icon" id="sidebar-icon-calorie"></span>
+          <span>卡路里</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="memo">
+          <span class="sidebar-nav-icon" id="sidebar-icon-memo"></span>
+          <span>备忘录</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="schedule-manager">
+          <span class="sidebar-nav-icon" id="sidebar-icon-schedule"></span>
+          <span>作息管家</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="chef-cookbook">
+          <span class="sidebar-nav-icon" id="sidebar-icon-chef"></span>
+          <span>私家大厨</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="learning-system">
+          <span class="sidebar-nav-icon" id="sidebar-icon-learning"></span>
+          <span>学习系统</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="interview-manager">
+          <span class="sidebar-nav-icon" id="sidebar-icon-interview"></span>
+          <span>面试管家</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-panel="daily-recorder">
+          <span class="sidebar-nav-icon" id="sidebar-icon-recorder"></span>
+          <span>录音机</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" id="sidebar-settings-btn">
+          <span class="sidebar-nav-icon" id="sidebar-icon-settings"></span>
+          <span>设置</span>
+        </a>
+      </nav>
+    </aside>
+    <button class="sidebar-toggle" id="sidebar-toggle" title="折叠侧边栏">◀</button>
+
+    <header class="app-header">
+      <h1>SkillBoard</h1>
+      <nav class="tab-nav" id="tab-nav">
+        <button class="tab-btn active" data-panel="cookie-accounting">
+          <span class="tab-icon" id="icon-cookie"></span>
+          <span class="tab-label">饼干记账</span>
+        </button>
+        <button class="tab-btn" data-panel="home-manager">
+          <span class="tab-icon" id="icon-home"></span>
+          <span class="tab-label">居家管家</span>
+        </button>
+        <button class="tab-btn" data-panel="calorie">
+          <span class="tab-icon" id="icon-calorie"></span>
+          <span class="tab-label">卡路里</span>
+        </button>
+        <button class="tab-btn" data-panel="memo">
+          <span class="tab-icon" id="icon-memo"></span>
+          <span class="tab-label">备忘录</span>
+        </button>
+        <button class="tab-btn" data-panel="schedule-manager">
+          <span class="tab-icon" id="icon-schedule"></span>
+          <span class="tab-label">作息管家</span>
+        </button>
+        <button class="tab-btn" data-panel="chef-cookbook">
+          <span class="tab-icon" id="icon-chef"></span>
+          <span class="tab-label">私家大厨</span>
+        </button>
+        <button class="tab-btn" data-panel="learning-system">
+          <span class="tab-icon" id="icon-learning"></span>
+          <span class="tab-label">学习系统</span>
+        </button>
+        <button class="tab-btn" data-panel="interview-manager">
+          <span class="tab-icon" id="icon-interview"></span>
+          <span class="tab-label">面试管家</span>
+        </button>
+        <button class="tab-btn" data-panel="daily-recorder">
+          <span class="tab-icon" id="icon-recorder"></span>
+          <span class="tab-label">录音机</span>
+        </button>
+        <button class="tab-btn settings-btn" id="settings-btn">
+          <span class="tab-icon" id="icon-settings"></span>
+          <span class="tab-label">设置</span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="app-main" id="app-main">
+      <cookie-accounting-panel></cookie-accounting-panel>
+      <calorie-panel style="display:none"></calorie-panel>
+      <home-manager-panel style="display:none"></home-manager-panel>
+      <chef-cookbook-panel style="display:none"></chef-cookbook-panel>
+      <daily-recorder-panel style="display:none"></daily-recorder-panel>
+      <learning-system-panel style="display:none"></learning-system-panel>
+      <schedule-manager-panel style="display:none"></schedule-manager-panel>
+      <memo-panel style="display:none"></memo-panel>
+      <interview-manager-panel style="display:none"></interview-manager-panel>
+
+      <div class="settings-view" id="settings-view" style="display:none">
+        <div class="settings-header">
+          <h2>设置</h2>
+          <p class="settings-desc">配置各技能模块的数据库文件</p>
+        </div>
+        <div class="settings-list" id="settings-list"></div>
+      </div>
+    </main>
+
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+      <a href="#" class="mobile-nav-item active" data-panel="cookie-accounting">饼干记账</a>
+      <a href="#" class="mobile-nav-item" data-panel="home-manager">居家管家</a>
+      <a href="#" class="mobile-nav-item" data-panel="calorie">卡路里</a>
+      <a href="#" class="mobile-nav-item" data-panel="memo">备忘录</a>
+      <a href="#" class="mobile-nav-item" data-panel="schedule-manager">作息管家</a>
+      <a href="#" class="mobile-nav-item" data-panel="chef-cookbook">私家大厨</a>
+      <a href="#" class="mobile-nav-item" data-panel="learning-system">学习系统</a>
+      <a href="#" class="mobile-nav-item" data-panel="interview-manager">面试管家</a>
+      <a href="#" class="mobile-nav-item" data-panel="daily-recorder">录音机</a>
+      <a href="#" class="mobile-nav-item" id="mobile-settings-btn">设置</a>
+    </nav>
+
+    <footer class="app-footer">
+      <p>SkillBoard · 纯前端离线运行 · 数据不上传任何服务器</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    function waitForSqlJs(callback) {
+      if (typeof initSqlJs !== 'undefined') { callback(); return; }
+      let waited = 0;
+      const interval = setInterval(() => {
+        waited += 100;
+        if (typeof initSqlJs !== 'undefined') { clearInterval(interval); callback(); }
+        else if (waited > 10000) { clearInterval(interval); callback(); }
+      }, 100);
+    }
+
+    const loadComponent = (path) => import(path).catch(e => { console.warn('Failed:', path, e.message); return null; });
+
+    waitForSqlJs(() => {
+      Promise.all([
+        loadComponent('./components/cookie-accounting/panel.js'),
+        loadComponent('./components/calorie-panel/panel.js'),
+        loadComponent('./components/home-manager/panel.js'),
+        loadComponent('./components/chef-cookbook/panel.js'),
+        loadComponent('./components/daily-recorder/panel.js'),
+        loadComponent('./components/learning-system/panel.js'),
+        loadComponent('./components/schedule-manager/panel.js'),
+        loadComponent('./components/memo/panel.js'),
+        loadComponent('./components/interview-manager/panel.js'),
+      ]).then(() => {
+        import('https://esm.sh/@phosphor-icons/react@2.1.7').then(ph => {
+          const { Cookie, ForkKnife, House, ChefHat, Gear, Microphone, GraduationCap, Clock, Notepad, Briefcase } = ph;
+          if (document.getElementById('icon-cookie')) document.getElementById('icon-cookie').replaceWith(Cookie({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-calorie')) document.getElementById('icon-calorie').replaceWith(ForkKnife({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-home')) document.getElementById('icon-home').replaceWith(House({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-chef')) document.getElementById('icon-chef').replaceWith(ChefHat({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-recorder')) document.getElementById('icon-recorder').replaceWith(Microphone({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-learning')) document.getElementById('icon-learning').replaceWith(GraduationCap({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-schedule')) document.getElementById('icon-schedule').replaceWith(Clock({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-memo')) document.getElementById('icon-memo').replaceWith(Notepad({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-interview')) document.getElementById('icon-interview').replaceWith(Briefcase({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('icon-settings')) document.getElementById('icon-settings').replaceWith(Gear({ weight: 'regular', width: 20, height: 20 }));
+          // Sidebar icons
+          if (document.getElementById('sidebar-icon-cookie')) document.getElementById('sidebar-icon-cookie').replaceWith(Cookie({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-calorie')) document.getElementById('sidebar-icon-calorie').replaceWith(ForkKnife({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-home')) document.getElementById('sidebar-icon-home').replaceWith(House({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-chef')) document.getElementById('sidebar-icon-chef').replaceWith(ChefHat({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-recorder')) document.getElementById('sidebar-icon-recorder').replaceWith(Microphone({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-learning')) document.getElementById('sidebar-icon-learning').replaceWith(GraduationCap({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-schedule')) document.getElementById('sidebar-icon-schedule').replaceWith(Clock({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-memo')) document.getElementById('sidebar-icon-memo').replaceWith(Notepad({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-interview')) document.getElementById('sidebar-icon-interview').replaceWith(Briefcase({ weight: 'regular', width: 20, height: 20 }));
+          if (document.getElementById('sidebar-icon-settings')) document.getElementById('sidebar-icon-settings').replaceWith(Gear({ weight: 'regular', width: 20, height: 20 }));
+        }).catch(() => {});
+      });
+    });
+
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const sidebarNavItems = document.querySelectorAll('.sidebar-nav-item');
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    const panels = {
+      'cookie-accounting': document.querySelector('cookie-accounting-panel'),
+      'calorie': document.querySelector('calorie-panel'),
+      'home-manager': document.querySelector('home-manager-panel'),
+      'chef-cookbook': document.querySelector('chef-cookbook-panel'),
+      'daily-recorder': document.querySelector('daily-recorder-panel'),
+      'learning-system': document.querySelector('learning-system-panel'),
+      'schedule-manager': document.querySelector('schedule-manager-panel'),
+      'memo': document.querySelector('memo-panel'),
+      'interview-manager': document.querySelector('interview-manager-panel'),
+    };
+
+    function switchPanel(panelName, isSettings = false) {
+      if (isSettings) {
+        location.hash = '#settings';
+        tabBtns.forEach(b => b.classList.remove('active'));
+        sidebarNavItems.forEach(s => s.classList.remove('active'));
+        document.getElementById('settings-btn')?.classList.add('active');
+        document.getElementById('sidebar-settings-btn')?.classList.add('active');
+        document.getElementById('mobile-settings-btn')?.classList.add('active');
+        Object.values(panels).forEach(p => { if (p) p.style.display = 'none'; });
+        document.getElementById('settings-view').style.display = 'block';
+        return;
+      }
+      location.hash = '#' + panelName;
+      // Update header tabs
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabBtns.forEach(b => { if (b.dataset.panel === panelName) b.classList.add('active'); });
+      // Update sidebar
+      sidebarNavItems.forEach(s => s.classList.remove('active'));
+      sidebarNavItems.forEach(s => { if (s.dataset.panel === panelName) s.classList.add('active'); });
+      // Update mobile bottom nav
+      mobileNavItems.forEach(item => item.classList.remove('active'));
+      mobileNavItems.forEach(item => { if (item.dataset.panel === panelName) item.classList.add('active'); });
+      // Show panel
+      Object.values(panels).forEach(p => { if (p) p.style.display = 'none'; });
+      document.getElementById('settings-view').style.display = 'none';
+      if (panels[panelName]) panels[panelName].style.display = 'block';
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.id === 'settings-btn') {
+          switchPanel(null, true);
+          return;
+        }
+        switchPanel(btn.dataset.panel);
+      });
+    });
+
+    sidebarNavItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (item.id === 'sidebar-settings-btn') {
+          switchPanel(null, true);
+          return;
+        }
+        switchPanel(item.dataset.panel);
+      });
+    });
+
+    // 移动端底部 nav 点击事件
+    mobileNavItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (item.id === 'mobile-settings-btn') {
+          switchPanel(null, true);
+          return;
+        }
+        switchPanel(item.dataset.panel);
+      });
+    });
+
+    // 桌面端侧边栏折叠功能
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const appSidebar = document.querySelector('.app-sidebar');
+    if (sidebarToggle && appSidebar) {
+      sidebarToggle.addEventListener('click', () => {
+        appSidebar.classList.toggle('collapsed');
+        const isCollapsed = appSidebar.classList.contains('collapsed');
+        sidebarToggle.textContent = isCollapsed ? '▶' : '◀';
+        sidebarToggle.title = isCollapsed ? '展开侧边栏' : '折叠侧边栏';
+        // 保存状态到 localStorage
+        localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+      });
+      // 页面加载时恢复状态
+      const savedState = localStorage.getItem('sidebarCollapsed');
+      if (savedState === 'true') {
+        appSidebar.classList.add('collapsed');
+        sidebarToggle.textContent = '▶';
+      }
+    }
+
+    const settingsView = document.getElementById('settings-view');
+    const settingsList = document.getElementById('settings-list');
+
+    function buildSettingsItem(skillName, label, icon) {
+      // cookie-accounting uses _name suffix for filename; others use main key
+      const saved = localStorage.getItem('skillboard_db_' + skillName + '_name') ||
+                    localStorage.getItem('skillboard_db_' + skillName);
+      const item = document.createElement('div');
+      item.className = 'settings-item';
+      item.dataset.skill = skillName;
+      const hasDb = saved && saved !== '[object Object]' && !saved.startsWith('[');
+      const fileDisplay = hasDb
+        ? '<span class="settings-status-ok">\u2713</span> ' + saved
+        : '<span class="settings-status-none">\u672a\u8bbe\u7f6e</span>';
+      item.innerHTML = '<div class="settings-item-info"><span class="settings-item-icon">' + icon + '</span><span class="settings-item-label">' + label + '</span></div><div class="settings-item-right"><span class="settings-item-file">' + fileDisplay + '</span><button class="settings-delete-btn" title="\u5220\u9664\u6570\u636e\u5e93" aria-label="\u5220\u9664\u6570\u636e\u5e93"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"></polyline><path d="M19,6l-1,14a2,2 0 0,1-2,2H8a2,2 0 0,1-2-2L5,6"></path><path d="M10,11L10,17"></path><path d="M14,11L14,17"></path><path d="M9,6V4a1,1 0 0,1 1-1h4a1,1 0 0,1 1,1v2"></path></svg></button></div>';
+      const fileStatus = item.querySelector('.settings-item-file');
+      const deleteBtn = item.querySelector('.settings-delete-btn');
+      deleteBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        localStorage.removeItem('skillboard_db_' + skillName);
+        localStorage.removeItem('skillboard_db_' + skillName + '_name');
+        localStorage.removeItem('skillboard_db_' + skillName + '_handle');
+        localStorage.removeItem('skillboard_db_' + skillName + '_handle_name');
+        fileStatus.innerHTML = '<span class="settings-status-none">\u672a\u8bbe\u7f6e</span>';
+        const panel = panels[skillName];
+        if (panel) {
+          panel.dispatchEvent(new CustomEvent('db-updated', { detail: { filename: '' }, bubbles: true }));
+        }
+      });
+      return item;
+    }
+
+    function renderSettings() {
+      if (!settingsList) return;
+      settingsList.innerHTML = '';
+      settingsList.appendChild(buildSettingsItem('cookie-accounting', '饼干记账', ''));
+      settingsList.appendChild(buildSettingsItem('calorie', '\u5361\u8def\u91cc', ''));
+      settingsList.appendChild(buildSettingsItem('home-manager', '\u5c45\u5bb6\u7ba1\u5bb6', ''));
+      settingsList.appendChild(buildSettingsItem('chef-cookbook', '私家大厨', ''));
+      settingsList.appendChild(buildSettingsItem('daily-recorder', '录音机', ''));
+      settingsList.appendChild(buildSettingsItem('learning-system', '学习系统', ''));
+      settingsList.appendChild(buildSettingsItem('schedule-manager', '作息管家', ''));
+      settingsList.appendChild(buildSettingsItem('memo', '备忘录', ''));
+      settingsList.appendChild(buildSettingsItem('interview-manager', '面试管家', ''));
+    }
+
+    function routeHash() {
+      const hash = location.hash;
+      if (hash === '#settings') {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        sidebarNavItems.forEach(s => s.classList.remove('active'));
+        mobileNavItems.forEach(item => item.classList.remove('active'));
+        document.getElementById('settings-btn')?.classList.add('active');
+        document.getElementById('sidebar-settings-btn')?.classList.add('active');
+        document.getElementById('mobile-settings-btn')?.classList.add('active');
+        Object.values(panels).forEach(p => { if (p) p.style.display = 'none'; });
+        settingsView.style.display = 'block';
+        renderSettings();
+      } else {
+        const panelName = hash.replace('#', '') || 'cookie-accounting';
+        tabBtns.forEach(b => b.classList.remove('active'));
+        sidebarNavItems.forEach(s => s.classList.remove('active'));
+        mobileNavItems.forEach(item => item.classList.remove('active'));
+        tabBtns.forEach(b => { if (b.dataset.panel === panelName) b.classList.add('active'); });
+        sidebarNavItems.forEach(s => { if (s.dataset.panel === panelName) s.classList.add('active'); });
+        mobileNavItems.forEach(item => { if (item.dataset.panel === panelName) item.classList.add('active'); });
+        settingsView.style.display = 'none';
+        Object.values(panels).forEach(p => { if (p) p.style.display = 'none'; });
+        if (panels[panelName]) panels[panelName].style.display = 'block';
+      }
+    }
+
+    window.addEventListener('hashchange', routeHash);
+    routeHash();
+
+    setTimeout(() => {
+      const def = !!customElements.get('cookie-accounting-panel');
+      const panel = document.querySelector('cookie-accounting-panel');
+      console.log('[SkillBoard] cookie-accounting-panel defined:', def);
+      console.log('[SkillBoard] panel exists:', !!panel);
+      console.log('[SkillBoard] shadowRoot children:', panel?.shadowRoot?.children?.length ?? 'none');
+      if (!def || !panel?.shadowRoot?.children?.length) {
+        console.warn('[SkillBoard] \u7ec4\u4ef6\u672a\u6b63\u5e38\u52a0\u8f7d\uff0c\u8bf7\u68c0\u67e5 console error \u6216\u7f51\u7edc\u8fde\u63a5');
+      }
+    }, 5000);
+  </script>
+</body>
+</html>

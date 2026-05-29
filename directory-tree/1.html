@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillBoard - 配色预览</title>
+  <style>
+    :root {
+      --primary: #18181B;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-light: #DBEAFE;
+      --background: #FAFAFA;
+      --surface: #FFFFFF;
+      --border: #E4E4E7;
+      --text-primary: #18181B;
+      --text-secondary: #71717A;
+      --text-muted: #A1A1AA;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .topbar .logo span { color: var(--accent); }
+
+    /* ===== Tab 导航 ===== */
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ===== 统计卡片 ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .stat-card .label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-card .change {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .stat-card .change.positive { color: var(--success); }
+    .stat-card .change.negative { color: var(--danger); }
+
+    /* ===== 面板区 ===== */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .panel h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    /* ===== 模拟图表 ===== */
+    .chart-placeholder {
+      height: 200px;
+      background: var(--accent-light);
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 16px;
+    }
+    .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      opacity: 0.8;
+      transition: height 0.3s ease;
+    }
+
+    /* ===== 模拟表格 ===== */
+    .mock-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .mock-table th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mock-table td {
+      font-size: 14px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mock-table .amount {
+      font-weight: 600;
+    }
+    .mock-table .amount.expense { color: var(--danger); }
+    .mock-table .amount.income { color: var(--success); }
+
+    /* ===== 按钮 ===== */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover { background: var(--background); }
+
+    /* ===== 颜色指示器 ===== */
+    .color-swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .panel-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .tab-nav { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部栏 -->
+  <div class="topbar">
+    <div class="logo">⚡ Skill<span>Board</span></div>
+    <button class="btn btn-primary">📥 导入数据库</button>
+  </div>
+
+  <!-- Tab 导航 -->
+  <div class="tab-nav">
+    <button class="tab-btn active">💰 记账</button>
+    <button class="tab-btn">🥗 卡路里</button>
+    <button class="tab-btn">🏠 居家管家</button>
+    <button class="tab-btn">👨‍🍳 私家大厨</button>
+    <button class="tab-btn">📝 备忘录</button>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="main-content">
+
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">今日支出</div>
+        <div class="value">¥128.50</div>
+        <div class="change negative">↑ 较昨日 +12%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">本月支出</div>
+        <div class="value">¥3,842.00</div>
+        <div class="change negative">↑ 较上月 +8%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">本月收入</div>
+        <div class="value">¥15,000.00</div>
+        <div class="change positive">↑ 较上月 +2%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">本月结余</div>
+        <div class="value">¥11,158.00</div>
+        <div class="change positive">↑ 较上月 +5%</div>
+      </div>
+    </div>
+
+    <!-- 图表 + 表格面板 -->
+    <div class="panel-grid">
+      <!-- 图表面板 -->
+      <div class="panel">
+        <h3>📊 近 7 天支出趋势</h3>
+        <div class="chart-placeholder">
+          <div class="bar" style="height: 45%"></div>
+          <div class="bar" style="height: 70%"></div>
+          <div class="bar" style="height: 35%"></div>
+          <div class="bar" style="height: 90%"></div>
+          <div class="bar" style="height: 55%"></div>
+          <div class="bar" style="height: 80%"></div>
+          <div class="bar" style="height: 40%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--text-muted)">
+          <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+        </div>
+      </div>
+
+      <!-- 最近交易面板 -->
+      <div class="panel">
+        <h3>📋 最近交易</h3>
+        <table class="mock-table">
+          <thead>
+            <tr><th>日期</th><th>分类</th><th>金额</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>01-14</td><td>餐饮</td><td class="amount expense">-¥42.00</td></tr>
+            <tr><td>01-14</td><td>交通</td><td class="amount expense">-¥8.50</td></tr>
+            <tr><td>01-13</td><td>购物</td><td class="amount expense">-¥128.00</td></tr>
+            <tr><td>01-13</td><td>工资</td><td class="amount income">+¥15,000</td></tr>
+            <tr><td>01-12</td><td>餐饮</td><td class="amount expense">-¥35.00</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px;display:flex;gap:8px;">
+          <button class="btn btn-secondary">查看全部</button>
+          <button class="btn btn-primary">+ 记一笔</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
